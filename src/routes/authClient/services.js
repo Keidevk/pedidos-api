@@ -6,8 +6,8 @@ export class Auth{
     async createNewSection(clientData){
         if(!clientData) return 0
         return await prisma.client.findFirst({where:{
-            Cedula:clientData.c_i,
-            Contraseña:clientData.password
+            cedula:clientData.c_i,
+            contraseña:clientData.password
         }})
     }
 }

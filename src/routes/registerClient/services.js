@@ -6,11 +6,11 @@ export class RegisterClient {
   async createClient(clientData) {
 
     await prisma.client.create({data:{
-        Cedula:clientData.c_i,
-        Nombre:clientData.name,
-        Apellido:clientData.lastname,
-        Telefono:clientData.phone,
-        Contraseña:clientData.password
+        cedula:clientData.c_i,
+        nombre:clientData.name,
+        apellido:clientData.lastname,
+        telefono:clientData.phone,
+        contraseña:clientData.password
       }})
   }
 

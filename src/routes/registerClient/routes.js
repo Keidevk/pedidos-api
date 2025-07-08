@@ -14,7 +14,7 @@ const registerRoutes = async (fastify) => {
     async (request,reply) => {
       const response = service.findClients()
       return response.then(res=>{
-        reply.send(res)
+        reply.code(200).send(res)
       })
     }
   )
