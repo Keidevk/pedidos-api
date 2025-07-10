@@ -13,7 +13,7 @@ const app = fastify({ logger: true });
 // Registra plugins globales
 // app.register(authPlugin); // Autenticación JWT
 await app.register(cors, {
-  origin: 'http://localhost:8081', 
+  origin: '*', 
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

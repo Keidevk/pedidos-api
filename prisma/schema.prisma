@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum tipoUsuario {
+  cliente
+  tienda
+  repartidor
+}
+
+
+enum tipoVehiculo {
+  moto
+  bicicleta
+  automovil
+  pie
+}
+
+enum estado {
+  recibido
+  preparando
+  listo
+  enCamino
+  entregado
+  cancelado
+}
+
+enum metodoPago {
+  efectivo
+  tarjeta
+  transferencia
+  pagoMovil 
+}
+
+enum categoriaProducto{
+  Desayuno
+  Almuerzo
+  Cena
+  Postre
+}
+
+
+model user {
+  id Int @id @default(autoincrement())
+  codigoIdentificacion String @db.VarChar(20) 
+  nombre String @db.VarChar(100)
+  apellido String @db.VarChar(100)
+  telefono String @db.VarChar(15)
+  email String @db.VarChar(100)
+  contraseña String @db.VarChar(255)
+  tipo tipoUsuario
+  fechaRegistro DateTime
+  ultimoAcceso DateTime
+  activo Boolean
+  fotoPerfil String
+}
+
+model client{
+  id Int @id @default(autoincrement())
+  cedula Int @unique
+  nombre String 
+  apellido String
+  telefono String @unique
+  contraseña String 
+}
+model shop{
+  id Int @id @default(autoincrement())
+  Nombre String
+  Descripcion String
+  Ubicacion String
+  HorarioApertura DateTime
+  HorarioCierre DateTime
+  TiempoEntregaPromedio Int
+  costoEnvio Decimal
+  rating Decimal
+  fotos_tienda Json
+}
+model deliveryPerson{
+  id Int @id @default(autoincrement())
+  tipoVehiculo tipoVehiculo
+  licencia String
+  disponibilidad Boolean
+  ubicacionActual String
+  rating Decimal
+  vehiculoDescripcion String
+  fotosVehiculo Json
+}
+model product{
+  id Int @id @default(autoincrement())
+  tiendaId Int
+  nombre String
+  descripcion String
+  precio Decimal
+  precioPromocion Decimal
+  categoria String
+  ingrediente String
+  disponibilidad Boolean
+  tiempoPreparacion Int
+  fotosProducto Json
+  destacado Boolean
+}
+
+
+model order {
+  id Int @id @default(autoincrement())
+  codigoPedido String
+  clienteId Int
+  tiendaId Int
+  repartidorId Int
+  estado estado
+  fechaPedido DateTime
+  fechaEntregaEstimada DateTime
+  fechaEntregaReal DateTime
+  metodoPago metodoPago
+  subtotal Decimal
+  iva Decimal
+  total Decimal
+  notas String
+  calificacion_Tienda Int
+}
+
+model detailsOrder {
+  id Int @id @default(autoincrement())
+  pedidoId Int
+  productoId Int
+  cantidad Int
+  precioUnitario Decimal
+  precioPromocionUnitario Decimal
+  instruccionesEspeciales String 
+}
+
+model message {
+  id Int @id @default(autoincrement())
+  pedidoId Int
+  remitenteId Int
+  mensaje String
+  fechaEnvio DateTime
+  leido Boolean
+}
+
+model promotion {
+  id Int @id @default(autoincrement())
+  tiendaId Int
+  productoId Int
+  titulo String
+  descripcion String
+  descuento Decimal
+  fechaInicio DateTime
+  FechaFin DateTime
+  activa Boolean
+  imagen_url String
+}
+
+model contests {
+  id Int @id @default(autoincrement())
+  nombre String
+  descripcion String
+  fechaInicio DateTime
+  FechaFin DateTime
+  activo Boolean @default(true)
+}
