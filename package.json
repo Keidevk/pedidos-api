@@ -2,6 +2,14 @@
   "name": "ls",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://github.com/Keidevk/pedidos-api#readme",
+  "bugs": {
+    "url": "https://github.com/Keidevk/pedidos-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Keidevk/pedidos-api.git"
+  },
   "license": "MIT",
   "author": "Kei",
   "type": "module",
@@ -9,6 +17,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./main.js --watch"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.0.1",
+    "@fastify/jwt": "^9.1.0",
+    "@prisma/client": "^6.9.0",
+    "fastify": "^5.4.0",
+    "prisma": "^6.9.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.1",
@@ -19,13 +35,5 @@
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "@fastify/cookie": "^11.0.2",
-    "@fastify/cors": "^11.0.1",
-    "@fastify/jwt": "^9.1.0",
-    "@prisma/client": "^6.9.0",
-    "fastify": "^5.4.0",
-    "prisma": "^6.9.0"
   }
 }
