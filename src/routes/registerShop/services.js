@@ -1,24 +1,59 @@
+import { hashPassword, verifyPassword } from "../../plugins/crypt.js";
 import { prisma } from "../../plugins/db.js";
 
 export class registerShop {
     constructor(fastify) {}
 
     async createShop(shopData){
-        console.log(shopData)
-        await prisma.shop.create({data:{
-            Nombre:shopData.Nombre,
-            Descripcion:shopData.Descripcion,
-            Ubicacion:shopData.Ubicacion,
-            HorarioApertura:shopData.HorarioApertura,
-            HorarioCierre:shopData.HorarioCierre,    
-            Categoria:shopData.Categoria,
-            TiempoEntregaPromedio:shopData.TiempoEntregaPromedio,
-            costoEnvio:shopData.costoEnvio,
-            rating:shopData.rating,
-            fotos_tienda:shopData.fotos_tienda
 
-        }})
+        const Password = await hashPassword(shopData.password)
+        const data = await prisma.user.findFirst({
+            where: {
+              email: shopData.email
+            },
+        });
+        
+        
+        if (data.activo) {
+          const verify = verifyPassword(shopData.password,data.contraseña)
+          if(verify){ 
+            return {
+              code: 409, 
+              message: 'El usuario ya existe',
+            };
+          }
+        }
+        
+        const newUser = await prisma.user.create({data:{
+            nombre:shopData.name,
+            apellido:shopData.lastname,
+            telefono:shopData.phone,
+            email:shopData.email,
+            contraseña:Password,
+            tipo:'tienda',
+            fechaRegistro:new Date(),
+            activo:true,
+            fotoPerfil:shopData.picture,
+            direccion:shopData.address,
+            documento_identidad:shopData.c_i
+          }})
+        
+
+        await prisma.shop.create({data:{
+                userId: newUser.id,
+                nombre: 'Nombre temporal',
+                descripcion: 'Temporal Descripcion',
+                ubicacion: newUser.direccion,
+                horarioApertura: new Date(),
+                horarioCierre: new Date(),
+                tiempoEntregaPromedio: 0,
+                costoEnvio: 0,
+                rating: 0,
+                fotosTienda: [],
+            },
+        })
     }
+
     async getTenShops(){
         return await prisma.shop.findMany({
             take:10,
@@ -30,6 +65,6 @@ export class registerShop {
     }
     async getById(id){
         const num = id
-        return await prisma.shop.findFirst({where:{id:parseInt(id,10)}})
+        return await prisma.shop.findFirst({where:{id:id}})
     }
 }

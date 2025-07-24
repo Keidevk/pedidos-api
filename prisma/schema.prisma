@@ -14,6 +14,7 @@ datasource db {
 }
 
 enum tipoUsuario {
+  admin
   cliente
   tienda
   repartidor
@@ -24,7 +25,6 @@ enum tipoVehiculo {
   moto
   bicicleta
   automovil
-  pie
 }
 
 enum estado {
@@ -43,7 +43,7 @@ enum metodoPago {
   pagoMovil 
 }
 
-enum categoriaProducto{
+enum categoriaProducto {
   Desayuno
   Almuerzo
   Cena
@@ -52,121 +52,180 @@ enum categoriaProducto{
 
 
 model user {
-  id Int @id @default(autoincrement())
-  codigoIdentificacion String @db.VarChar(20) 
-  nombre String @db.VarChar(100)
-  apellido String @db.VarChar(100)
-  telefono String @db.VarChar(15)
-  email String @db.VarChar(100)
-  contraseña String @db.VarChar(255)
-  tipo tipoUsuario
+  id           Int            @id @default(autoincrement())
+  nombre       String         @db.VarChar(100)
+  apellido     String         @db.VarChar(100)
+  telefono     String         @db.VarChar(15)
+  email        String         @db.VarChar(100)
+  contraseña   String         @db.VarChar(255)
+  tipo         tipoUsuario
   fechaRegistro DateTime
-  ultimoAcceso DateTime
-  activo Boolean
-  fotoPerfil String
+  activo       Boolean
+  fotoPerfil   String
+  direccion    String
+  documento_identidad String  @db.Char(50)
+
+  cliente      Cliente?
+  tienda       Shop?
+  repartidor   DeliveryPerson?
+
+  Message Message[]
 }
 
-model client{
-  id Int @id @default(autoincrement())
-  cedula Int @unique
-  nombre String 
-  apellido String
-  telefono String @unique
-  contraseña String 
+model Cliente {
+  id         String   @id @default(uuid())
+  userId     Int      @unique
+  user       user     @relation(fields: [userId], references: [id])
+  pedidos    Pedido[]
 }
-model shop{
-  id Int @id @default(autoincrement())
-  Nombre String
-  Descripcion String
-  Ubicacion String
-  HorarioApertura DateTime
-  HorarioCierre DateTime
-  TiempoEntregaPromedio Int
-  costoEnvio Decimal
-  rating Decimal
-  fotos_tienda Json
+
+model Shop {
+  id                   String   @id @default(uuid())
+  userId               Int      @unique
+  user                 user     @relation(fields: [userId], references: [id])
+
+  nombre               String
+  descripcion          String
+  ubicacion            String
+  horarioApertura      DateTime
+  horarioCierre        DateTime
+  tiempoEntregaPromedio Int
+  costoEnvio           Decimal
+  rating               Decimal
+  fotosTienda          Json
+
+  productos            Producto[]
+  pedidos              Pedido[]
+  promociones          Promotion[]
+  estadisticas         EstadisticasTienda[]
 }
-model deliveryPerson{
-  id Int @id @default(autoincrement())
-  tipoVehiculo tipoVehiculo
-  licencia String
-  disponibilidad Boolean
-  ubicacionActual String
-  rating Decimal
+
+model DeliveryPerson {
+  id                 String   @id @default(uuid())
+  userId             Int      @unique
+  user               user     @relation(fields: [userId], references: [id])
+
+  tipoVehiculo       tipoVehiculo
+  licencia           String
+  disponibilidad     Boolean
+  ubicacionActual    String
+  rating             Decimal
   vehiculoDescripcion String
-  fotosVehiculo Json
-}
-model product{
-  id Int @id @default(autoincrement())
-  tiendaId Int
-  nombre String
-  descripcion String
-  precio Decimal
-  precioPromocion Decimal
-  categoria String
-  ingrediente String
-  disponibilidad Boolean
-  tiempoPreparacion Int
-  fotosProducto Json
-  destacado Boolean
+  fotosVehiculo      Json
+
+  pedidos            Pedido[]
 }
 
+model Pedido {
+  id           String     @id @default(uuid())
+  fecha        DateTime   @default(now())
+  estado       estado
+  total        Float
+  metodoPago   metodoPago
 
-model order {
-  id Int @id @default(autoincrement())
-  codigoPedido String
-  clienteId Int
-  tiendaId Int
-  repartidorId Int
-  estado estado
-  fechaPedido DateTime
-  fechaEntregaEstimada DateTime
-  fechaEntregaReal DateTime
-  metodoPago metodoPago
-  subtotal Decimal
-  iva Decimal
-  total Decimal
-  notas String
-  calificacion_Tienda Int
+  clienteId    String
+  cliente      Cliente    @relation(fields: [clienteId], references: [id])
+
+  tiendaId     String
+  tienda       Shop       @relation(fields: [tiendaId], references: [id])
+
+  repartidorId String?
+  repartidor   DeliveryPerson? @relation(fields: [repartidorId], references: [id])
+
+  detalles     DetallePedido[]
+  mensajes     Message[]
 }
 
-model detailsOrder {
-  id Int @id @default(autoincrement())
-  pedidoId Int
-  productoId Int
-  cantidad Int
-  precioUnitario Decimal
-  precioPromocionUnitario Decimal
-  instruccionesEspeciales String 
+model DetallePedido {
+  id              String     @id @default(uuid())
+  cantidad        Int
+  precioUnitario  Float
+
+  pedidoId        String
+  pedido          Pedido     @relation(fields: [pedidoId], references: [id])
+
+  productoId      String
+  producto        Producto   @relation(fields: [productoId], references: [id])
+
+  instruccionesEspeciales String?
 }
 
-model message {
-  id Int @id @default(autoincrement())
-  pedidoId Int
+model Categoria {
+  id        String     @id @default(uuid())
+  nombre    String
+  icono     String?
+  productos Producto[]
+}
+
+model Producto {
+  id             String   @id @default(uuid())
+  nombre         String
+  descripcion    String?
+  precio         Float
+  stock_actual   Int
+  stock_minimo   Int      @default(5)
+  imagen_url     String?
+  activo         Boolean  @default(true)
+
+  tiendaId       String
+  tienda         Shop     @relation(fields: [tiendaId], references: [id])
+
+  categoriaId    String?
+  categoria      Categoria? @relation(fields: [categoriaId], references: [id])
+
+  movimientos    MovimientoInventario[]
+  detalles       DetallePedido[]
+
+  Promotion Promotion[]
+}
+
+model MovimientoInventario {
+  id          String   @id @default(uuid())
+  tipo        String   // "VENTA", "REPOSICIÓN", "AJUSTE"
+  cantidad    Int
+  fecha       DateTime @default(now())
+
+  productoId  String
+  producto    Producto @relation(fields: [productoId], references: [id])
+}
+
+model EstadisticasTienda {
+  id             String   @id @default(uuid())
+  fecha          DateTime @default(now())
+  ventas_totales Float
+  total_pedidos  Int
+  producto_top   String?
+
+  tiendaId       String
+  tienda         Shop     @relation(fields: [tiendaId], references: [id])
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  pedidoId    String
+  pedido      Pedido   @relation(fields: [pedidoId], references: [id])
+
   remitenteId Int
-  mensaje String
-  fechaEnvio DateTime
-  leido Boolean
+  remitente   user     @relation(fields: [remitenteId], references: [id])
+
+  mensaje     String
+  fechaEnvio  DateTime
+  leido       Boolean
 }
 
-model promotion {
-  id Int @id @default(autoincrement())
-  tiendaId Int
-  productoId Int
-  titulo String
-  descripcion String
-  descuento Decimal
-  fechaInicio DateTime
-  FechaFin DateTime
-  activa Boolean
-  imagen_url String
-}
+model Promotion {
+  id           String   @id @default(uuid())
+  titulo       String
+  descripcion  String
+  descuento    Float
+  fechaInicio  DateTime
+  fechaFin     DateTime
+  activa       Boolean
+  imagen_url   String?
 
-model contests {
-  id Int @id @default(autoincrement())
-  nombre String
-  descripcion String
-  fechaInicio DateTime
-  FechaFin DateTime
-  activo Boolean @default(true)
+  tiendaId     String
+  tienda       Shop     @relation(fields: [tiendaId], references: [id])
+
+  productoId   String?
+  producto     Producto? @relation(fields: [productoId], references: [id])
 }
