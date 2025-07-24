@@ -5,7 +5,7 @@ export class Auth{
     constructor(fastify){}
 
     async createNewSection(clientData){
-        if(!clientData) return 0
+        if(!clientData) return {message:'data not sended',code:409}
         const data = await prisma.user.findFirst({where:{
             email:clientData.email,
         }})
@@ -27,6 +27,13 @@ export class Auth{
                     code:403,
                     token:'false',
                 }
+            }
+        }
+        else{
+            return {
+                message:'user not found',
+                code:404,
+                token:'false'
             }
         }
     }
