@@ -11,7 +11,7 @@ export class Auth{
         }})
 
         if (data) {
-            const verify = verifyPassword(clientData.password,data.contraseña)
+            const verify = await verifyPassword(clientData.password,data.contraseña)
             if(verify){ 
               return { 
                     message: 'logged', 
@@ -20,6 +20,12 @@ export class Auth{
                     name:data.nombre + " " + data.apellido,
                     tipo:data.tipo, 
                     userId:data.id
+                }
+            }else{
+                return {
+                    message:'not logged',
+                    code:403,
+                    token:'false',
                 }
             }
         }
