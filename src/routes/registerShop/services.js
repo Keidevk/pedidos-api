@@ -14,7 +14,7 @@ export class registerShop {
         });
         
         
-        if (data.activo) {
+        if (data) {
           const verify = verifyPassword(shopData.password,data.contraseña)
           if(verify){ 
             return {
@@ -52,6 +52,11 @@ export class registerShop {
                 fotosTienda: [],
             },
         })
+
+      return {
+        code: 201, 
+        message: 'Usuario creado con éxito',
+      };
     }
 
     async getTenShops(){

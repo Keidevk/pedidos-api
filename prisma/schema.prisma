@@ -28,6 +28,7 @@ enum tipoVehiculo {
 }
 
 enum estado {
+  pendiente
   recibido
   preparando
   listo
@@ -39,7 +40,6 @@ enum estado {
 enum metodoPago {
   efectivo
   tarjeta
-  transferencia
   pagoMovil 
 }
 

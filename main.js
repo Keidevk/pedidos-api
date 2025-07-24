@@ -8,6 +8,7 @@ import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import registerProduct from "./src/routes/registerProduct/routes.js";
 import registerStats from "./src/routes/sellerClient/routes.js";
+import registerOrders from "./src/routes/registerOrder/router.js";
 
 const app = fastify({ logger: true });
 
@@ -30,6 +31,7 @@ app.register(AuthRoutes, { prefix: "/api/auth" });
 app.register(registerShops, { prefix: "/api/shop" });
 app.register(registerProduct, { prefix: "/api/product" });
 app.register(registerStats, { prefix: "/api/stats" });
+app.register(registerOrders,{prefix:"/api/order"})
 // Inicia el servidor
 const start = async () => {
   try {
