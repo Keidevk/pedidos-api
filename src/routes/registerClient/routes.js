@@ -21,6 +21,14 @@ const registerRoutes = async (fastify) => {
       })
     }
   )
+  fastify.get('/get/:id',
+    async(request,reply)=>{
+      const id = request.params.id
+      return service.findClientById(id).then(res=>{
+        reply.code(200).send(res)
+      })
+    }
+  )
   fastify.delete('/delete/:id',
     async (request,reply) => {
     const id =parseInt(request.params.id)

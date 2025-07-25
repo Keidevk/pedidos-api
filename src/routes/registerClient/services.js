@@ -51,6 +51,10 @@ export class RegisterClient {
   async findClients(){
     return await prisma.user.findMany({where:{tipo:'cliente'}})
   }
+
+  async findClientById(userId){
+    return await prisma.cliente.findMany({where:{id:userId}})
+  }
   async deleteClient(id){
     await prisma.user.deleteMany({where:{
       id:id
