@@ -5,8 +5,9 @@ const registerShops = async (fastify) => {
 
     fastify.post('/register',
         async (request,reply) => {
-            service.createShop(request.body)
-            reply.send({message:"Shop created",code:201}).code(201)
+            return await service.createShop(request.body).then(res=>{
+                reply.code(res.code).send(res.message)
+            })
         }
     )
     fastify.get('/',
