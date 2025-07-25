@@ -80,15 +80,25 @@ const registerStats = async (fastify) => {
     const id = await prisma.shop.findFirst({where:{userId:parseInt(shopId)}})
     
     return await prisma.pedido.count({
-    where: {
-      tiendaId: id.id,
-    estado: {
-      in: ['pendiente'],
-    },
-  },
-});
-
+      where: {
+        tiendaId: id.id,
+        estado: {
+          in: ['pendiente'],
+        },
+      },
+    });
   })
+  fastify.get("/orders/:shopId",async(request,reply)=>{
+    const shopId = request.params.shopId
+    const id = await prisma.shop.findFirst({where:{userId:parseInt(shopId)}})
+
+    return await prisma.pedido.findMany({
+      where:{
+        tiendaId:id.id,
+      }
+    })
+  })
+
 };
 
 export default registerStats;
