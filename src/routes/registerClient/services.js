@@ -53,7 +53,8 @@ export class RegisterClient {
   }
 
   async findClientById(userId){
-    return await prisma.cliente.findMany({where:{id:userId}})
+    const id = await prisma.user.findMany({where:{id:parseInt(userId)}})
+    return id
   }
   async deleteClient(id){
     await prisma.user.deleteMany({where:{
