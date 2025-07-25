@@ -45,8 +45,9 @@ export class RegisterProduct{
     }
 
     async getProductByCategory(category){
-        const data = await prisma.producto.findMany({where:{categoriaId:category}})
-        return {code:200,data:data}
+        const categoria = await prisma.categoria.findFirst({where:{nombre:category}})
+        const data = await prisma.producto.findMany({where:{categoriaId:categoria.id}})
+        return {code:200,data:data,categoria:categoria}
     }
     async getProductsByShopIdAndProductsId(filterData){
         console.log(filterData)
