@@ -75,6 +75,6 @@ export class registerShop {
 
     async getByUserId(id){
       const userId = id
-      return await prisma.shop.findFirst({where:{userId:userId}})
+      return await prisma.shop.findFirst({where:{userId:parseInt(userId)}})
     }
 }
