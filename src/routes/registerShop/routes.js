@@ -22,6 +22,12 @@ const registerShops = async (fastify) => {
             reply.send(res).code(200)
         }
     )
+    fastify.get('/userId:id',
+        async (request,reply) => {
+            const res = await service.getByUserId(request.params.id)
+            reply.code(200).send(res)
+        }
+    )
 }
 
 export default registerShops;
