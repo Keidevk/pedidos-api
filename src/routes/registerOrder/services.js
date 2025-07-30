@@ -55,6 +55,24 @@ export class registerOrder{
          data:pedidos   
         }
     }
+
+    async updateOrderStatusByOrderUuid(orderData){
+        const {status,uuid} = orderData
+        const response = await prisma.pedido.update(
+          {
+            where:{
+              id:uuid
+            },
+            data:{
+              estado:status
+            }
+          })
+          return {
+            code:200,
+            message:'Pedido actualizado',
+            data:response
+          }
+    }
     
     // async getOrderDetailsBy(id){
 

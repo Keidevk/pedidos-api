@@ -19,6 +19,14 @@ const registerOrders = async (fastify) => {
 
         }
     )
+    fastify.put('/update',
+        async (request,reply) => {
+            const body = request.body;
+            return await service.updateOrderStatusByOrderUuid(body).then(res=>{
+                reply.code(res.code).send(res)
+            })
+        }
+    )
 }
 
 export default registerOrders
