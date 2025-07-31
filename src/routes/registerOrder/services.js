@@ -73,6 +73,26 @@ export class registerOrder{
             data:response
           }
     }
+
+    async getDetailsOrderByOrderUuid(pedidoId){
+      const pedidoConDetalles = await prisma.pedido.findUnique({
+          where: {
+            id: pedidoId,
+          },
+          include: {
+            cliente: true,
+            tienda: true,
+            detalles: {
+              include: {
+                producto: true,
+              },
+            },
+          },
+        });
+
+      if(!pedidoConDetalles) return {code:404,message:"Pedido no encontrado"}
+      return {details:pedidoConDetalles,code:200}
+    }
     
     // async getOrderDetailsBy(id){
 
