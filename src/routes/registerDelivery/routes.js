@@ -18,5 +18,12 @@ const registerdelivery = async (fastify) => {
             })
         }
     )
+    fastify.get('/actives',
+        async (request, reply) => {
+            return await services.getDeliverysActive().then(res=>{
+                reply.code(res.code).send(res)
+            })
+        }
+    )
 }
 export default registerdelivery

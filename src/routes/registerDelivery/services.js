@@ -90,6 +90,20 @@ export default class registerDelivery {
             }
         }
     };
-}
+  } 
+
+  async getDeliverysActive(){
+    const deliverysActives = await prisma.deliveryPerson.findMany(
+      {
+        where:{
+          disponibilidad:true,
+        },
+        orderBy:{
+          rating:'desc'
+        }
+      })
+    if(!deliverysActives) return {code:200,message:"No hay deliverys activos"}
+    return {code:200,deliverys:deliverysActives}
+  }
 
 }
