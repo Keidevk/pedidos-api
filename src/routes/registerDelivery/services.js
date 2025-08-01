@@ -141,34 +141,55 @@ export default class registerDelivery {
 }
   
 
-  async assignmentOrderToDeliveryPerson(userId,pedidoId){
+  async assignmentOrderToDeliveryPerson(userId, pedidoId) {
+  const repartidor = await prisma.deliveryPerson.findUnique({
+    where: { userId:userId }
+  });
 
-    const repartidor = await prisma.deliveryPerson.findUnique({
-      where: { userId: userId }
-    });
+  if (!repartidor || !repartidor.disponibilidad) {
+    return { code: 404, message: "Repartidor no encontrado o no disponible." };
+  }
 
-    if (!repartidor || !repartidor.disponibilidad) {
-      return {code:404,message:"Repartidor no encontrado."};
-    }
+  const pedido = await prisma.pedido.findUnique({
+    where: { id: pedidoId },
+    select: { repartidorId: true }
+  });
 
-    const assignment = await prisma.$transaction([
-      prisma.pedido.update({
-        where: { id: pedidoId },
-        data: {
-          repartidor: {
-            connect: { userId: userId }
-          }
+  if (!pedido) {
+    return { code: 404, message: "Pedido no encontrado." };
+  }
+
+  if (pedido.repartidorId) {
+    return { code: 400, message: "Este pedido ya está asignado a otro repartidor." };
+  }
+
+  const assignment = await prisma.$transaction([
+    prisma.pedido.update({
+      where: { id: pedidoId },
+      data: {
+        repartidor: {
+          connect: { userId }
         }
-      }),
-      prisma.deliveryPerson.update({
-        where: { userId: userId },
-        data: {
-          disponibilidad: false
-        }
-      })
-    ]);
-    return {code:200,data:assignment}
+      }
+    }),
+    prisma.deliveryPerson.update({
+      where: { userId },
+      data: {
+        disponibilidad: false
+      }
+    })
+  ]);
 
+  return { code: 200, data: assignment };
+}
+
+  async getOrdersByUser(userId){
+    const orders = await prisma.deliveryPerson.findMany({
+      where:{userId:userId},
+      include:{pedidos:true}
+    })
+    if(!orders) return {code:200,message:'No hay pedidos disponibles'}
+    return {code:200,data:orders}
   }
 
   async updateDeliveryData(userId,deliveryData){

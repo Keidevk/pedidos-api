@@ -42,5 +42,14 @@ const registerdelivery = async (fastify) => {
             })
         }
     )
+    
+    fastify.get('/orders/:userId',
+        async (request,reply) => {
+            const {userId} = request.params
+            return await services.getOrdersByUser(parseInt(userId)).then(res=>{
+                reply.code(res.code).send(res)
+            })
+        }
+    )
 }
 export default registerdelivery
