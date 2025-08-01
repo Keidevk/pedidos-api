@@ -29,6 +29,16 @@ const registerRoutes = async (fastify) => {
       })
     }
   )
+
+  fastify.get('/get/uuid/:uuid',
+    async (request, reply) => {
+      const uuid = request.params.uuid
+      return service.findClientByUuid(uuid).then(res=>{
+        reply.code(res.code).send(res)
+      })
+    }
+  )
+
   fastify.delete('/delete/:id',
     async (request,reply) => {
     const id =parseInt(request.params.id)

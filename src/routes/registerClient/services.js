@@ -35,7 +35,7 @@ export class RegisterClient {
         activo:true,
         fotoPerfil:"",
         direccion:JSON.stringify(clientData.address),
-        documento_identidad:toString(clientData.c_i)
+        documento_identidad:clientData.c_i
       }})
 
     await prisma.cliente.create({data:{
@@ -56,6 +56,19 @@ export class RegisterClient {
     const id = await prisma.user.findMany({where:{id:parseInt(userId)}})
     return id
   }
+
+  async findClientByUuid(uuid){
+    const clientData = await prisma.cliente.findFirst(
+      {
+        where:{
+          id:uuid
+        },
+        include:{user:true}
+      })
+    if(!clientData) return {code:404,message:"User not found"}
+    return  {code:200,data:clientData}
+  }
+
   async deleteClient(id){
     await prisma.user.deleteMany({where:{
       id:id
