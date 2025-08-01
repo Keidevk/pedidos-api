@@ -106,4 +106,38 @@ export default class registerDelivery {
     return {code:200,deliverys:deliverysActives}
   }
 
+  async assignmentOrderToDeliveryPerson(userId,pedidoId){
+
+    const repartidor = await prisma.deliveryPerson.findUnique({
+      where: { userId: userId }
+    });
+
+    if (!repartidor || !repartidor.disponibilidad) {
+      return {code:404,message:"Repartidor no encontrado."};
+    }
+
+    const assignment = await prisma.$transaction([
+      prisma.pedido.update({
+        where: { id: pedidoId },
+        data: {
+          repartidor: {
+            connect: { userId: userId }
+          }
+        }
+      }),
+      prisma.deliveryPerson.update({
+        where: { userId: userId },
+        data: {
+          disponibilidad: false
+        }
+      })
+    ]);
+    return {code:200,data:assignment}
+
+  }
+
+  async updateDeliveryData(userId,deliveryData){
+    // const delvieryNewData = await prisma
+  }
+
 }
