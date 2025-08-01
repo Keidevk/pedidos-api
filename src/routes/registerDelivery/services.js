@@ -106,6 +106,41 @@ export default class registerDelivery {
     return {code:200,deliverys:deliverysActives}
   }
 
+  async unassigmentOrderToDeliveryPerson(userId, pedidoId) {
+    const pedido = await prisma.pedido.findUnique({
+      where: { id: pedidoId },
+      select: { repartidorId: true }
+    });
+
+    if (!pedido) {
+      return{code:404,message:"Pedido no encontrado."};
+    }
+
+  // if (pedido.repartidorId !== userId) {
+  //   return {code:409,message:"Este pedido no está asignado al repartidor especificado."};
+  // }
+
+  await prisma.$transaction([
+    prisma.pedido.update({
+      where: { id: pedidoId },
+      data: {
+        repartidor: {
+          disconnect: true
+        }
+      }
+    }),
+    prisma.deliveryPerson.update({
+      where: { userId: userId },
+      data: {
+        disponibilidad: true
+      }
+    })
+  ]);
+
+  return { code:200, message: "Repartidor desasignado correctamente." };
+}
+  
+
   async assignmentOrderToDeliveryPerson(userId,pedidoId){
 
     const repartidor = await prisma.deliveryPerson.findUnique({
