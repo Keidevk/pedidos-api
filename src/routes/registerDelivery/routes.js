@@ -25,7 +25,7 @@ const registerdelivery = async (fastify) => {
             })
         }
     )
-    fastify.get('/assignment/:userId/:orderId',
+    fastify.put('/assignment/:userId/:orderId',
         async (request, reply) => {
             const {userId,orderId} = request.params
             return await services.assignmentOrderToDeliveryPerson(parseInt(userId),orderId)
