@@ -77,4 +77,37 @@ export class registerShop {
       const userId = id
       return await prisma.shop.findFirst({where:{userId:parseInt(userId)}})
     }
+
+    async getDeliveryOnRoad(shopId){
+      const deliverys =  await prisma.pedido.findMany({
+      where: {
+        tienda: {
+          userId: shopId,
+        },
+        repartidorId: {
+          not: null, // solo pedidos que ya tienen repartidor asignado
+        }
+      },
+      include: {
+        repartidor: {
+          include: {
+            user: true
+          }
+        },
+        cliente: {
+          include: {
+            user: true
+          }
+        },
+        tienda: true,
+        detalles: {
+          include: {
+            producto: true
+          }
+        }
+      }
+    });
+    if(!deliverys)return {code:200,message:"No hay repartidores llevando tus productos"}
+    return{code:200,data:deliverys}
+    }
 }
