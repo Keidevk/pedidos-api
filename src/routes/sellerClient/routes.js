@@ -90,11 +90,22 @@ const registerStats = async (fastify) => {
   })
   fastify.get("/orders/:shopId",async(request,reply)=>{
     const shopId = request.params.shopId
-    const id = await prisma.shop.findFirst({where:{userId:parseInt(shopId)}})
+    const id = await prisma.shop.findFirst({
+      where:{
+        userId:parseInt(shopId)
+      }
+    })
 
     return await prisma.pedido.findMany({
       where:{
         tiendaId:id.id,
+      },
+      include:{
+        detalles:{
+          include:{
+            producto:true
+          }
+        }
       }
     })
   })

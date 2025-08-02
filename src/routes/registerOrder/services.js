@@ -80,8 +80,16 @@ export class registerOrder{
             id: pedidoId,
           },
           include: {
-            cliente: true,
-            tienda: true,
+            cliente: {
+              include:{
+                user:true
+              }
+            },
+            tienda:{
+              include:{
+                user:true
+              }
+            },
             detalles: {
               include: {
                 producto: true,
@@ -89,7 +97,7 @@ export class registerOrder{
             },
           },
         });
-
+      
       if(!pedidoConDetalles) return {code:404,message:"Pedido no encontrado"}
       return {details:pedidoConDetalles,code:200}
     }
