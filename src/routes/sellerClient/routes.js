@@ -82,9 +82,6 @@ const registerStats = async (fastify) => {
     return await prisma.pedido.count({
       where: {
         tiendaId: id.id,
-        estado: {
-          in: ['pendiente'],
-        },
       },
     });
   })

@@ -21,13 +21,70 @@ const registerProduct = async (fastify) => {
     )
 
     fastify.post('/register',
-        async (request,reply) => {
-            const product = request.body
-            return service.createProduct(product).then(res=>{
-                reply.code(res.code).send(res.message)
-            })
+        async (request, reply) => {
+        try {
+            const {
+                nombre,
+                descripcion,
+                precio,
+                stock_actual,
+                stock_minimo,
+                tiendaId,
+                categoriaId
+            } = request.body;
+
+
+//             if (
+//               !nombre ||
+//               !descripcion ||
+//               precio === undefined || precio === null ||
+//               stock_actual === undefined || stock_actual === null ||
+//               stock_minimo === undefined || stock_minimo === null ||
+//               !tiendaId ||
+//               !categoriaId
+//             ) {
+//                 console.log("📦 nombre:", nombre);
+// console.log("📝 descripcion:", descripcion);
+// console.log("💰 precio:", precio);
+// console.log("📦 stock_actual:", stock_actual);
+// console.log("📦 stock_minimo:", stock_minimo);
+// console.log("🏬 tiendaId:", tiendaId);
+// console.log("📂 categoriaId:", categoriaId);
+
+//               return reply.status(400).send({ error: "Todos los campos son obligatorios." });
+//             }
+
+
+            // const image = await service.uploadFile(request,reply);
+        
+            // if (!image.url) {
+            //     return reply.code(400).send(image.error);
+            // }
+        
+            // const product = {
+            //   nombre: nombre.value.trim(),
+            //   descripcion: descripcion.value.trim(),
+            //   precio: parseFloat(precio.value),
+            //   stock_actual: parseInt(stock_actual.value),
+            //   stock_minimo: parseInt(stock_minimo.value),
+            //   activo: true,
+            //   tiendaId: tiendaId.value.trim(),
+            //   categoriaId: categoriaId.value.trim(),
+            //   imagen_url: image.url, 
+            // };
+
+        
+            console.log(product)
+        
+          const res = await service.createProduct(product);
+            
+            return reply.code(200).send("Upload");
+        } catch (err) {
+            return reply.code(500).send({ error: 'Error al registrar el producto', detail: err.message });
+        }
         }
     )
+
     fastify.get('/getproducts',
         async (request,reply) => {
             return service.getProducts().then(res=>{

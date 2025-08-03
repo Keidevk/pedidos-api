@@ -1,15 +1,21 @@
 import fastify from "fastify";
 // import authPlugin from './src/plugins/auth.js';
+import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
+import multipart from "@fastify/multipart";
+import fastifyStatic from "@fastify/static";
+import path from 'path';
+
 import registerRoutes from "./src/routes/registerClient/routes.js";
 import AuthRoutes from "./src/routes/authClient/routes.js";
 import registerShops from "./src/routes/registerShop/routes.js";
-
-import cors from "@fastify/cors";
-import cookie from "@fastify/cookie";
 import registerProduct from "./src/routes/registerProduct/routes.js";
 import registerStats from "./src/routes/sellerClient/routes.js";
 import registerOrders from "./src/routes/registerOrder/router.js";
 import registerdelivery from "./src/routes/registerDelivery/routes.js";
+import AuthKeys from "./src/routes/sensitiveData/routes.js";
+import messageRoutes from "./src/routes/message/routes.js";
+// import uploadImages from "./src/routes/uploadImage/router.js";
 
 const app = fastify({ logger: true });
 
@@ -20,6 +26,19 @@ await app.register(cors, {
   credentials: true,
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+});
+app.register(fastifyStatic,{root:path.join(path.resolve(),'uploads'),prefix:'/uploads'});
+app.register(multipart, {
+  attachFieldsToBody: false,
+  limits: {
+    fieldNameSize: 100,
+    fieldSize: 1000,
+    fields: 10,
+    fileSize: 1000000,
+    files: 1,
+    headerPairs: 2000,
+  },
+  attachFieldsToBody: true,
 });
 app.register(cookie, {
   secret: process.env.COOKIE,
@@ -34,6 +53,9 @@ app.register(registerProduct, { prefix: "/api/product" });
 app.register(registerStats, { prefix: "/api/stats" });
 app.register(registerOrders,{prefix:"/api/order"})
 app.register(registerdelivery,{prefix:'/api/delivery'})
+app.register(AuthKeys,{prefix:'/api/keys/'})
+app.register(messageRoutes,{prefix:'api/message'})
+// app.register(uploadImages,{prefix:'/api/uploads'})
 // Inicia el servidor
 const start = async () => {
   try {
