@@ -24,9 +24,16 @@ export class Message {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              type: 'text',
-              payload: `${mensaje}`,
-            }),
+              "request": {
+                "type": "text",
+                "payload": `${mensaje}`
+              },
+              "config": {
+                "stop": null,
+                "restart": false
+              }
+            }
+            ),
         });
         console.log(userId + " " + mensaje +"\n")
         if (!response.ok) {
@@ -34,7 +41,10 @@ export class Message {
         }
 
         const data = await response.json();
+        console.log('Data')
         console.log(data)
-        return {code:200,data:data};
+        console.log('Payload')
+        console.log(data[0].payload.message)
+        return {code:200,data:data[0].payload.message};
     }
 }
