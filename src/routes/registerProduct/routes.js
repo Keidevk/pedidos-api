@@ -100,6 +100,16 @@ const registerProduct = async (fastify) => {
             })
         }
     )
+
+    fastify.get('/getproducts/userid/:id',
+        async (request,reply) => {
+            const id = request.params.id
+            return service.getProductsByUserId(id).then(res=>{
+                reply.code(res.code).send(res.data)
+            })
+        }
+    )
+
     fastify.get('/getproduct/:id',
         async (request,reply) => {
             const id = request.params.id
