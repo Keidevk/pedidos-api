@@ -10,6 +10,17 @@ const registerdelivery = async (fastify) => {
                 reply.code(res.code).send(res.message)
             })
         })
+
+    fastify.put('/update/:id',
+        async (request,reply) => {
+            const {id} = request.params
+            const body = request.body
+            console.log(id)
+            return await services.updateDeliveryData(parseInt(id),body).then(res=>{
+                reply.code(res.code).send(res)
+            })
+        }
+    )
     fastify.get('/:userid',
         async (request,reply)=>{
             const userId = request.params.userid

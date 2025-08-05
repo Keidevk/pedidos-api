@@ -193,7 +193,23 @@ export default class registerDelivery {
   }
 
   async updateDeliveryData(userId,deliveryData){
-    // const delvieryNewData = await prisma
+    const deliveryNewData = await prisma.deliveryPerson.update({
+      where:{
+        user:{
+          id:userId
+        }
+      },
+      data:{
+          tipoVehiculo: deliveryData.tipoVehiculo,
+          licencia: deliveryData.licencia,
+          descripcion: deliveryData.descripcion,
+          rating: deliveryData.rating,
+          disponibilidad: deliveryData.disponibilidad,
+      }
+    })
+
+    if(!data){return {code:404,message:"Delivery no encontrado"}}
+    return {code:200,data:deliveryNewData}
   }
 
 }
