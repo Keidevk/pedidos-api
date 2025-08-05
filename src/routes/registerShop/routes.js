@@ -10,6 +10,17 @@ const registerShops = async (fastify) => {
             })
         }
     )
+
+    fastify.put('/update/:id',
+        async (request, reply) => {
+            const {id} = request.params
+            const body = request.body
+            return await service.updateShopData(parseInt(id),body).then(res=>{
+                reply.code(res.code).send(res)
+            })
+        }
+    )
+
     fastify.get('/',
         async (request,reply) => {
             const res = await service.getTenShops()

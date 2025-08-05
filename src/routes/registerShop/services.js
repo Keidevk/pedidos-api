@@ -59,6 +59,40 @@ export class registerShop {
       };
     }
 
+    async updateShopData(userId,shopData){
+      console.log(shopData)
+      const data = await prisma.user.findFirst({
+        where:{
+          id:userId
+        },
+        include:{
+          tienda:true
+        }
+      })
+
+      if(!data){
+        return {code:404,message:'Tienda no encontrada'}
+      }
+
+      const newdata = await prisma.shop.update({
+        where:{
+          id:data.tienda.id
+        },
+        data:{
+          nombre: shopData.nombre,
+          descripcion: shopData.descripcion,
+          ubicacion: shopData.ubicacion,
+          horarioApertura: shopData.horarioApertura,
+          horarioCierre: shopData.horarioCierre,
+          tiempoEntregaPromedio: shopData.tiempoEntregaPromedio,
+        }
+      })
+
+      return {code:200, message:"Tienda actualizada"}
+
+
+    }
+
     async getTenShops(){
         return await prisma.shop.findMany({
             take:10,
@@ -82,16 +116,13 @@ export class registerShop {
       try {
         const tiendaId = await prisma.user.findFirst({where: {id:shopId},include:{tienda:true}});
         const cantidadDeliveriesAsignados = await prisma.pedido.count({
-      where: {
-        tiendaId:tiendaId.tienda.id,
-        repartidorId: {
-          not: null,
-        },
-      },
-    });
-
-
-
+          where: {
+            tiendaId:tiendaId.tienda.id,
+            repartidorId: {
+              not: null,
+            },
+          },
+        });
         return {shopId , cantidadDeliveriesAsignados };
       }catch (error) {
         console.error('Error al obtener deliveries asignados:', error);
