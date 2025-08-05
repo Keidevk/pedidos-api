@@ -36,6 +36,14 @@ const registerShops = async (fastify) => {
             })
         }
     )
+    fastify.get('/count/delivery/:userId',
+        async (request, reply) =>{
+            const {userId} = request.params
+            return await service.getCountDeliveryOnRoad(parseInt(userId)).then(res=>{
+                reply.code(200).send(res)
+            })
+        }
+    )
 }
 
 export default registerShops;

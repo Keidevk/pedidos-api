@@ -33,7 +33,7 @@ export class registerShop {
             tipo:'tienda',
             fechaRegistro:new Date(),
             activo:true,
-            fotoPerfil:shopData.picture,
+            fotoPerfil:'',
             direccion:shopData.address,
             documento_identidad:shopData.c_i
           }})
@@ -43,7 +43,7 @@ export class registerShop {
                 userId: newUser.id,
                 nombre: 'Nombre temporal',
                 descripcion: 'Temporal Descripcion',
-                ubicacion: newUser.direccion,
+                ubicacion: 'Dirección Temporal',
                 horarioApertura: new Date(),
                 horarioCierre: new Date(),
                 tiempoEntregaPromedio: 0,
@@ -77,6 +77,27 @@ export class registerShop {
       const userId = id
       return await prisma.shop.findFirst({where:{userId:parseInt(userId)}})
     }
+
+    async getCountDeliveryOnRoad(shopId){
+      try {
+        const tiendaId = await prisma.user.findFirst({where: {id:shopId},include:{tienda:true}});
+        const cantidadDeliveriesAsignados = await prisma.pedido.count({
+      where: {
+        tiendaId:tiendaId.tienda.id,
+        repartidorId: {
+          not: null,
+        },
+      },
+    });
+
+
+
+        return {shopId , cantidadDeliveriesAsignados };
+      }catch (error) {
+        console.error('Error al obtener deliveries asignados:', error);
+        return { error: 'Error interno del servidor' };
+      }
+  };
 
     async getDeliveryOnRoad(shopId){
       const deliverys =  await prisma.pedido.findMany({
