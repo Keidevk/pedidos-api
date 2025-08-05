@@ -94,6 +94,19 @@ export class RegisterProduct{
         const data = await prisma.producto.findMany({where:{tiendaId:id}})
         return {code:200,data:data}
     }
+
+    async getProductsByUserId(id){
+        const data = await prisma.shop.findMany({
+            where:{
+                userId:parseInt(id)
+            },
+            include:{
+                productos:true
+            }
+        })
+        return {code:200,data:data}
+    }
+
     async getProductById(id){
         const data = await prisma.producto.findFirst({where:{id:id}})
         return {code:200,data:data}
