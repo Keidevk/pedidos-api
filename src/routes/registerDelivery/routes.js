@@ -13,7 +13,7 @@ const registerdelivery = async (fastify) => {
 
     fastify.put('/update/:id',
         async (request,reply) => {
-            const {id} = request.params
+            const id = request.params.id
             const body = request.body
             console.log(id)
             return await services.updateDeliveryData(parseInt(id),body).then(res=>{
