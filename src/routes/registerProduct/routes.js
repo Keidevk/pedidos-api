@@ -34,25 +34,25 @@ const registerProduct = async (fastify) => {
             } = request.body;
 
 
-//             if (
-//               !nombre ||
-//               !descripcion ||
-//               precio === undefined || precio === null ||
-//               stock_actual === undefined || stock_actual === null ||
-//               stock_minimo === undefined || stock_minimo === null ||
-//               !tiendaId ||
-//               !categoriaId
-//             ) {
-//                 console.log("📦 nombre:", nombre);
-// console.log("📝 descripcion:", descripcion);
-// console.log("💰 precio:", precio);
-// console.log("📦 stock_actual:", stock_actual);
-// console.log("📦 stock_minimo:", stock_minimo);
-// console.log("🏬 tiendaId:", tiendaId);
-// console.log("📂 categoriaId:", categoriaId);
+            if (
+              !nombre ||
+              !descripcion ||
+              precio === undefined || precio === null ||
+              stock_actual === undefined || stock_actual === null ||
+              stock_minimo === undefined || stock_minimo === null ||
+              !tiendaId ||
+              !categoriaId
+            ) {
+                console.log("📦 nombre:", nombre);
+console.log("📝 descripcion:", descripcion);
+console.log("💰 precio:", precio);
+console.log("📦 stock_actual:", stock_actual);
+console.log("📦 stock_minimo:", stock_minimo);
+console.log("🏬 tiendaId:", tiendaId);
+console.log("📂 categoriaId:", categoriaId);
 
-//               return reply.status(400).send({ error: "Todos los campos son obligatorios." });
-//             }
+              return reply.status(400).send({ error: "Todos los campos son obligatorios." });
+            }
 
 
             // const image = await service.uploadFile(request,reply);
@@ -61,17 +61,17 @@ const registerProduct = async (fastify) => {
             //     return reply.code(400).send(image.error);
             // }
         
-            // const product = {
-            //   nombre: nombre.value.trim(),
-            //   descripcion: descripcion.value.trim(),
-            //   precio: parseFloat(precio.value),
-            //   stock_actual: parseInt(stock_actual.value),
-            //   stock_minimo: parseInt(stock_minimo.value),
-            //   activo: true,
-            //   tiendaId: tiendaId.value.trim(),
-            //   categoriaId: categoriaId.value.trim(),
+            const product = {
+              nombre: nombre.value.trim(),
+              descripcion: descripcion.value.trim(),
+              precio: parseFloat(precio.value),
+              stock_actual: parseInt(stock_actual.value),
+              stock_minimo: parseInt(stock_minimo.value),
+              activo: true,
+              tiendaId: tiendaId.value.trim(),
+              categoriaId: categoriaId.value.trim(),
             //   imagen_url: image.url, 
-            // };
+            };
 
         
             console.log(product)
