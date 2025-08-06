@@ -39,7 +39,7 @@ export default class registerDelivery {
     
         await prisma.deliveryPerson.create({data:{
           userId:newUser.id,
-          disponibilidad:false,
+          disponibilidad:true,
           fotosVehiculo:'',
           licencia:'',
           rating:0,
