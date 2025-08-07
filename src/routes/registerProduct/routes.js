@@ -78,7 +78,7 @@ console.log("📂 categoriaId:", categoriaId);
         
           const res = await service.createProduct(product);
             
-       return reply.code(200).send({data:{
+       return reply.code(200).send({
         code:200,
         status:'success',
         id: product.id,
@@ -86,7 +86,7 @@ console.log("📂 categoriaId:", categoriaId);
         descripcion: product.descripcion,
         precio: product.precio,
         stock_actual: product.stock_actual,
-      }});
+      });
         } catch (err) {
             return reply.code(500).send({ error: 'Error al registrar el producto', detail: err.message });
         }
